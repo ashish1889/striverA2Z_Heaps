@@ -1,0 +1,195 @@
+//Question: https://www.codingninjas.com/studio/problems/min-heap-implementation_5480527?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+/*
+
+Implementation
+The heap property is satisfied by the heap data structure. And follows the properties of a complete binary tree. Heap property is as follows, which we have used all over the approach:-
+Each parent element is smaller than or equal to its child elements.
+As we all know, the complete binary tree is a tree with every level filled and all nodes as far left as feasible. The last level of the binary tree may be empty and unfilled. 
+ You're probably wondering what the heap property is.
+Every node of the tree is given a key value or weight in the heap data structure.
+Now, the key value of the root node is compared with the values of children's nodes, and then the tree is arranged into two categories, respectively i.e., max Heap or min-heap. This data structure is used as a sorting algorithm to sort the elements in a list and an array. This sorting algorithm can be used in data structures like order statistics, priority queues, Dijkstra's algorithm, or Prim's algo. Heapify refers to creating a heap data structure using a binary tree. To create the Min-Heap, the heapify process is used. For a complete binary tree, the left child in an array is 2*i+1 and the right child is 2*i+2 if the current node index is ‘i’ in the array. For the index ‘i’ the parent of it is (i-1)/2.
+Now to create min-heap following steps are used:-
+ 
+left ( k )
+Return 2*k+1.
+ 
+right ( k )
+Return 2*k+2.
+ 
+parent ( k )
+Return ( k-1 ) / 2.
+ 
+heapify ( k)
+Find the left child of the node.
+Find the right child of the node.
+Find the smallest element between the current node and its children.
+Check if the left child is the smallest.
+Check if the right node is smallest than the previous smallest.
+If the smallest element is not in the current node.
+We have to heapify the Heap to take that element to the top.
+Swap the values of the current node and the smallest node value.
+Call the heapify function on the smallest value node which now contains the value of the parent node.
+ 
+insert( Val )
+Insert a val in the heap.
+The function contains heap array, val to inserted.
+Insert the val at the end of the heap.
+If there is more than 1 node in the Heap.
+MinHeapify the heap by checking the val at its parent node.
+Also, do it until the heap property is not satisfied.
+while( i != 0 and heap[parent(i)] > heap[i]):
+Swap the value of the current node with its parent.
+Check the same if the parent element of the current element is satisfying the heap property.
+i = parent(i)
+ 
+removeMin()
+Check if the current node is the only node in the heap.
+Reduce the size of the heap and return.
+Take out the min value and remove it from the heap.
+Put the last node on the top of the heap. So that we can heapify from the root node till the last children.
+Decrease the size of the heap as the minimum element is removed.
+Heapify the heap to satisfy the heap property.
+minElement()
+Return the topmost element from the heap.
+Time Complexity
+O( N * log( N )), Where ‘N’ is the number of queries.
+
+We are iterating over each query which is ‘N’ and for each insert or remove we do heapify operation 
+where we each time go to child or parent which is at its double or half of the current position respectively and max, 
+we will go to the height of the tree which is log ( N ).
+Hence the time complexity will be O( N * log( N )).
+Space Complexity
+O( N ), Where ‘N’ is the number of queries.
+
+We are creating a heap array of size ‘N’.
+Hence the space complexity will be O( N ).
+*/
+
+//Code
+
+class minHeap {
+public:
+    int capacity, heapSize;
+    int *heapArray;
+
+    // Constructor to initialize the heap.
+    minHeap(int cap) {
+        heapSize = 0;
+        capacity = cap;
+        heapArray = new int[capacity];
+    }
+
+    // Function to get the index of the parent node.
+    int parent(int i) {
+        return (i - 1) / 2;
+    }
+
+    // Function to get the index of the left child node.
+    int left(int i) {
+        return (2 * i + 1);
+    }
+
+    // Function to get the index of the right child node.
+    int right(int i) {
+        return (2 * i + 2);
+    }
+
+    // Extract the minimum element from the heap.
+    int extractMinElement() {
+        if (heapSize <= 0) {
+            // Indicate that the heap is empty.
+            return -1;
+        }
+        if (heapSize == 1) {
+            heapSize--;
+            // Return the only element in the heap.
+            return heapArray[0];
+        }
+
+        // Store the root element.
+        int root = heapArray[0];
+
+        heapSize--;
+        heapArray[0] = heapArray[heapSize];
+        heapArray[heapSize] = 0;
+
+        // Restore the heap property.
+        heapify(0);
+
+        return root;
+    }
+
+    // Delete an element at a given index.
+    void deleteElement(int ind)
+    {
+        if (ind < heapSize)
+        {
+            // Decrease the key to the minimum possible value.
+            decreaseKeyElement(ind, INT_MIN);
+
+            // Remove the element from the heap.
+            extractMinElement();
+        }
+    }
+
+    // Insert a new element into the heap.
+    void insert(int val) {
+        int ind = heapSize;
+        heapSize++;
+        heapArray[ind] = val;
+
+        // Restore the heap property by swapping with parent if necessary.
+        while (ind != 0 and heapArray[ind] < heapArray[parent(ind)]) {
+            swap(heapArray[ind], heapArray[parent(ind)]);
+            ind = parent(ind);
+        }
+    }
+
+    // Delete an element at a given index by decreasing its key to INT_MIN.
+    void deleteKey(int ind)
+    {
+        if (ind < heapSize)
+        {
+            // Decrease the key to the minimum possible value.
+            decreaseKeyElement(ind, INT_MIN);
+
+            // Remove the element from the heap.
+            extractMinElement();
+        }
+    }
+
+    // Decrease the value of an element at a given index.
+    void decreaseKeyElement(int ind, int new_val)
+    {
+        // Update the element's value.
+        heapArray[ind] = new_val;
+        while (ind != 0 && heapArray[parent(ind)] > heapArray[ind])
+        {
+            // Swap with parent if violating heap property.
+            swap(heapArray[ind], heapArray[parent(ind)]);
+            ind = parent(ind);
+        }
+    }
+
+    // Heapify the heap from a given index.
+    void heapify(int ind)
+    {
+        int l = left(ind);
+        int r = right(ind);
+        int smallest = ind;
+
+        // Find the index of the smallest element among current node, left child, and right child.
+        if (l < heapSize and heapArray[l] < heapArray[smallest])
+            smallest = l;
+        if (r < heapSize and heapArray[r] < heapArray[smallest])
+            smallest = r;
+
+        // If the smallest element is not the current node, swap and recursively heapify.
+        if (smallest != ind)
+        {
+            swap(heapArray[ind], heapArray[smallest]);
+            heapify(smallest);
+        }
+    }
+};
