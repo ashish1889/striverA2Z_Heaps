@@ -3,12 +3,19 @@
 /*
 
 Implementation
-The heap property is satisfied by the heap data structure. And follows the properties of a complete binary tree. Heap property is as follows, which we have used all over the approach:-
+The heap property is satisfied by the heap data structure. And follows the properties of a complete binary tree.
+Heap property is as follows, which we have used all over the approach:-
 Each parent element is smaller than or equal to its child elements.
-As we all know, the complete binary tree is a tree with every level filled and all nodes as far left as feasible. The last level of the binary tree may be empty and unfilled. 
+As we all know, the complete binary tree is a tree with every level filled and all nodes as far left as feasible. 
+The last level of the binary tree may be empty and unfilled. 
  You're probably wondering what the heap property is.
 Every node of the tree is given a key value or weight in the heap data structure.
-Now, the key value of the root node is compared with the values of children's nodes, and then the tree is arranged into two categories, respectively i.e., max Heap or min-heap. This data structure is used as a sorting algorithm to sort the elements in a list and an array. This sorting algorithm can be used in data structures like order statistics, priority queues, Dijkstra's algorithm, or Prim's algo. Heapify refers to creating a heap data structure using a binary tree. To create the Min-Heap, the heapify process is used. For a complete binary tree, the left child in an array is 2*i+1 and the right child is 2*i+2 if the current node index is ‘i’ in the array. For the index ‘i’ the parent of it is (i-1)/2.
+Now, the key value of the root node is compared with the values of children's nodes, and then the tree is arranged into two categories, 
+respectively i.e., max Heap or min-heap. This data structure is used as a sorting algorithm to sort the elements in a list and an array. 
+This sorting algorithm can be used in data structures like order statistics, priority queues, Dijkstra's algorithm, or Prim's algo.
+Heapify refers to creating a heap data structure using a binary tree. To create the Min-Heap, the heapify process is used. 
+For a complete binary tree, the left child in an array is 2*i+1 and the right child is 2*i+2 if the current node index is ‘i’ in the array. 
+For the index ‘i’ the parent of it is (i-1)/2.
 Now to create min-heap following steps are used:-
  
 left ( k )
