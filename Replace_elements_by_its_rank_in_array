@@ -1,0 +1,123 @@
+//Question: https://www.codingninjas.com/studio/problems/replace-each-element-of-array-with-its-corresponding-rank_975384?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf
+
+/*Approach1 : Brute Force
+First, make an array ‘temp’ of size ‘N’ and copy all the elements of ’ARR’ in it.
+Run a loop where ‘i ranges from 0 to N-1 -:
+          1. Declare a HashMap and initialise a variable ‘rank’= 1
+          2. Iterate over array ‘temp’ and increment ‘rank’ by one whenever we find an element in ‘temp’ which is strictly less than ‘ARR[i]’ and not present in HashMap. 
+		  After that insert the element in HashMap.
+          3. Replace the value in ‘ARR[i]’ with ‘rank’.
+Return the array ‘ARR’.
+Time Complexity
+O(N*N),  Where ’N’ is the size of array ‘ARR’.
+
+ 
+
+Here, we will have two nested loops, and in the worst case the outer loop runs ‘N’ time, and the inner loop will also run ‘N’ time.
+
+Space Complexity
+O(N),  Where ’N’ is the size of array ‘ARR’.
+
+ 
+
+Space required by the ‘temp’ array and HashMap will be of order ‘N’. */
+
+
+/*
+    Time complexity: O(N*N)
+    Space complexity: O(N)
+	
+    Where N is the size of given array.
+*/
+
+#include <unordered_set>
+
+vector<int> replaceWithRank(vector<int> &arr, int n) 
+{
+    // Make copy of array.
+    vector<int> temp = arr;
+
+    for(int i = 0; i < n; i++) 
+    {
+        int rank = 1;
+        unordered_set<int> hashMap; 
+        
+        // Finding rank of element arr[i].
+        for(auto element : temp) 
+        {
+            if(element < arr[i] and !hashMap.count(element)) 
+            {
+                rank++;
+            }
+            hashMap.insert(element);
+        }
+        arr[i] = rank;
+    }
+    return arr;
+}
+
+
+==================================================================================================================================================================================================
+
+/*Approach2 : Use Sorting
+First, make an array ‘temp’ of size ‘N’ and copy all the elements of ’ARR’ in it.
+Sort the array ‘temp’ in non-decreasing order.
+Create a HashMap that will map each element with its rank.
+Initialize a variable ‘rank’ := 1.
+Run a loop where ‘i’ ranges from 0 to N-1. For each ‘i’ If ‘temp[i]’ is not present in HashMap then insert the key ‘temp[i]’ in HashMap and map its value with ‘rank’
+ and after that increment the variable ‘rank’ by 1.
+Iterate over the array ‘ARR’ and replace each element with its corresponding value in HashMap.
+Return the array ‘ARR’.
+Time Complexity
+O(N*Log(N)),  Where ’N’ is the size of array ‘ARR’.
+
+ 
+
+Sorting will take the time of order ‘N * Log(N)’.
+
+Space Complexity
+O(N),  Where ’N’ is the size of array ‘ARR’.
+
+ 
+
+Space required by the ‘temp’ array and HashMap will be of order ‘N’.*/
+
+/*
+    Time complexity: O(N * Log(N))
+    Space complexity: O(N)
+    
+    Where N is the size of given array.
+*/
+
+#include <algorithm>
+#include <unordered_map>
+
+vector<int> replaceWithRank(vector<int> &arr, int n) 
+{
+    // Make copy of array and sort it in non-decreasing order.
+    vector<int> temp = arr;
+    sort(temp.begin(), temp.end());
+    
+    // Consist mapping of each element with its rank.
+    unordered_map<int, int> hashMap; 
+    
+    int rank = 1;
+    
+    // Find Rank of each element.
+    for(int i = 0; i < n; i++) 
+    {
+        if(!hashMap.count(temp[i])) 
+        {
+            hashMap[temp[i]] = rank;
+            rank++;
+        }
+    }
+    
+    // Replace each element with its corresponding rank.
+    for(int i = 0; i < n; i++) 
+    {
+        arr[i] = hashMap[arr[i]];
+    }
+
+    return arr;
+}
