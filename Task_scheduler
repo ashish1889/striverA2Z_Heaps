@@ -101,3 +101,36 @@ public:
         return max(time,sz);
     }
 };
+
+===========================================================================================================================================
+//Approach using formula
+/*
+["A","A","A","A","A","A","B","C","D","E","F","G"]
+n = 2
+A-6,B-1,C-1,D-1,E-1,F-1,G-1
+So no of seperation  between max frequency characters will be 5(map[25] - 1) here
+for idleSlots calculation we will use product of cooloff distance(n = 2) and maxVal
+To get exact idleSlots count reduce the number by freq of other characters apart from
+maxFreq.
+*/
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+         vector<int> map(26,0);
+        for(char c : tasks){
+            map[c-'A']++;
+        }
+
+        sort(map.begin(),map.end());
+        int maxVal = map[25] - 1;
+        int idleSlots = maxVal * n;//5*2 = 10
+
+        for(int i=24; i>=0; i--){
+            idleSlots -= min(map[i], maxVal); //4
+        }
+
+        return idleSlots > 0 ? idleSlots + tasks.size() : tasks.size();
+        
+    }
+};
