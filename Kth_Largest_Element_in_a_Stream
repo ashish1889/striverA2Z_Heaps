@@ -1,0 +1,243 @@
+//Question: https://leetcode.com/problems/kth-largest-element-in-a-stream/description/
+
+//Code1:
+
+class KthLargest {
+public:
+
+    // min heap of size k
+    priority_queue<int, vector<int>, greater<int>> values;
+    vector<int> numbers;
+    int index = 0;
+
+    KthLargest(int k, vector<int>& nums) {
+        numbers = nums;
+
+        // push first k elements in the min heap, and keep track of index value
+        if(k <= nums.size()){ // this is actually for extreme case where in the beginning I don't have k elements in the array
+        // and I will depend in first add to the numbers (add one element) and then I can make sure that K <= nums.size()
+            for(; index < k ; index++){
+                values.push(nums[index]);
+            }
+        }
+    }
+    
+    int add(int val) {
+        // this happens only once if we have special case which k > nums.size()
+        if(values.empty()){
+            for(; index < numbers.size() ; index++){
+                values.push(numbers[index]);
+            }
+            values.push(val);
+
+            return values.top();
+        }
+        
+        // this will be executed just in the first time we call add, whicg will process the remaining elements from the
+        // numbers array (same as nums) and keep the size of the min heap is K
+        for(; index < numbers.size() ; index++){
+            if(val > values.top()){
+                values.pop();
+                values.push(numbers[index]);
+            }
+        }
+        
+        // process each value come from the stream
+        if(val > values.top()){
+            values.pop();
+            values.push(val);
+        }
+
+        // the top element will have the Kth largest element
+        return values.top();
+    }
+};
+
+/**
+ * Your KthLargest object will be instantiated and called as such:
+ * KthLargest* obj = new KthLargest(k, nums);
+ * int param_1 = obj->add(val);
+ */
+
+/* 
+Note: How to find the top Kth largest element: 
+1- naive approach: using a max heap
+* push all the elements in the max_heap. O(log 1 + log 2 + ... + log n) = O(log n!) = O(n logn)
+* pop K-1 elements from the max_heap. O(k logn)
+* the top element in the max heap is the Kth largest element O(1)
+
+- Time complexity = O(n logn + k logn) = O((n+k) logn) = O(n logn)
+- Space complexity = O(n)
+
+******************************************************************************
+2- more efficient solution using k-size of MIN HEAP: 
+1- push K elements in the min_heap. O(k log k)
+2- loop through the rest elements in the array: O((n-k) log k)
+    if element > top element from the min heap:
+        * pop the top element from the heap. O(logk)
+        * push the element in the heap. O(logk)
+
+3- the top element from the min heap will be the Kth largest element. O(1)
+
+- Time complexity = O(k logk + (n-k) logk) = O((n-k+k) logk) = O(n logk)
+- Space complexity = O(k)
+
+******************************************************************************
+
+*/
+
+==================================================================================================================================================================================================================
+
+//Alternate code for above code:
+
+class KthLargest {
+public:
+    int k;
+    priority_queue<int, vector<int>, greater<int>> pq;
+    KthLargest(int k, vector<int>& nums): k(k){
+        for(int x: nums) {
+            pq.push(x);
+            if (pq.size()> k) pq.pop();
+        }
+    }
+    
+    int add(int val) {
+        pq.push(val);
+        if (pq.size()> k) pq.pop();   
+        return pq.top();      
+    }
+};
+
+/**
+ * Your KthLargest object will be instantiated and called as such:
+ * KthLargest* obj = new KthLargest(k, nums);
+ * int param_1 = obj->add(val);
+ */
+
+===================================================================================================================================================================================================================
+
+//Code using Multiset:
+
+class KthLargest {
+public:
+    int k;
+    multiset<int, less<int>> container; //multiset storing the elements in ascending order
+    KthLargest(int k, vector<int>& nums) : k(k) {
+        for (int x : nums) {
+            container.insert(x);
+            if (container.size() > k) {
+                container.erase(container.begin());
+            }
+        }
+    }
+
+    int add(int val) {
+        container.insert(val);
+        if (container.size() > k) {
+            container.erase(container.begin());
+        }
+        return *(container.begin());
+    }
+};
+
+===================================================================================================================================================================================================================
+Multiset:
+
+A multiset is a container in C++ that allows storage of multiple elements of the same type, similar to a set, but it permits duplicate elements.
+The multiset maintains its elements in a specific order defined by its comparator, which in this case is less<int>, meaning it sorts elements in ascending order.
+
+Let's illustrate the arrangement of elements in a multiset<int, less<int>> container with an example:
+#include <iostream>
+#include <set>
+
+int main() {
+    std::multiset<int, std::less<int>> container;
+
+    container.insert(5);
+    container.insert(2);
+    container.insert(7);
+    container.insert(2);
+    container.insert(9);
+    container.insert(5);
+
+    for (const auto& element : container) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+
+In this example, we insert several integers into the multiset named container. Here's the sequence of insertions:
+
+Insert 5
+Insert 2
+Insert 7
+Insert 2 (note that multiset allows duplicates)
+Insert 9
+Insert 5 (another duplicate)
+Now, let's examine the output:
+
+2 2 5 5 7 9
+
+As you can see, the elements are arranged in ascending order. Duplicates are allowed, and they appear in the order they were inserted.
+
+To populate in descending order:
+
+To populate a multiset in descending order, you need to provide a comparator that sorts elements in descending order. In C++, you can achieve this by using the greater<int> comparator.
+
+Here's how you can populate a multiset in descending order:
+
+#include <iostream>
+#include <set>
+
+int main() {
+    std::multiset<int, std::greater<int>> container;
+
+    container.insert(5);
+    container.insert(2);
+    container.insert(7);
+    container.insert(2);
+    container.insert(9);
+    container.insert(5);
+
+    for (const auto& element : container) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+
+Output:
+9 7 5 5 2 2 
+In this code:
+
+We define a multiset named container with the greater<int> comparator. This ensures that elements are stored in descending order.
+We insert integers into the container.
+When we iterate over the elements of the container, we see that they are printed in descending order.
+========================================================================================================================================================================================================
+//Java code:
+
+Intuition
+Use a min heap and maintain its size at k elements. By doing this we ensure that the root node of the heap is always the kth largest element.
+
+Complexity
+Time complexity: O((n+m)∗log(k))O((n+m)*log(k))O((n+m)∗log(k)) where m is the number of calls to the add method
+Space complexity: O(k)
+
+class KthLargest {
+  private PriorityQueue<Integer> heap = new PriorityQueue<>();
+  private int k;
+
+  public KthLargest(int k, int[] nums) {
+    this.k = k;
+    for (var n : nums) add(n);
+  }
+  
+  public int add(int val) {
+    heap.offer(val);
+    if (heap.size() > k) heap.poll();
+    return heap.peek();
+  }
+}
